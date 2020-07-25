@@ -7,6 +7,7 @@
 #include "Gradient.cpp"
 #include "GradientMoving.cpp"
 #include "cstrcmp.h" 
+#include "LEDPoint.cpp"
 
 //Let the compiler know we will be using the cstrcmp function from cstrcmp.h
 //extern bool cstrcmp(char * c_str1, char * c_str2);
@@ -145,6 +146,7 @@ class MQTTParser {
     char GradientAction[5] = {'G','R','A','D','\0'};
     char MovingGradientAction[5] = {'M','G','R','D','\0'};
     char ClearAction[5] = {'C','L','E','A','\0'};
+    char PointAction[5] = {'P','O','N','T','\0'};
 
     //This detemines what key to use
 
@@ -168,11 +170,16 @@ class MQTTParser {
        Serial.println("MOVING GRADIENT");
     }
     
+    else  if(cstrcmp(PointAction, actionKey)){
+       action = new LEDPoint(led_count,MQTTMessage);
+       actionAvailable = true; 
+       Serial.println("LEDPoint");
+    }
+    
     else  if(cstrcmp(ClearAction, actionKey)){
       Serial.println("CLEAR");
        killAllActions = true;
     }
-
     
       else{
          Serial.println("Finished Running cstrcmp");
