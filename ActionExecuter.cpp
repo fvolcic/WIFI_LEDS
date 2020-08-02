@@ -32,14 +32,17 @@
 
     Serial.println("SETTING UP ACTION");
 
+    //Determine if this action will overwrite all past LED actions. 
+    //If so, we can safely clear all the old led actions. 
+    if(action -> getFullStripUpdate())
+      this->clear_LED_actions();
+
+
     //Run all the setup functions for the current action that is being added to the list
-   
     action->setupLEDs(this->colors);
  
     action->alternateCoreActionSetup();
     
-    //action->alternateCoreMQTTActionSetup(client);
-
     
     //This determines if any actions need to be run
     if((action -> getUpdateLEDs()))
@@ -181,6 +184,17 @@
       if(LED_Action_index >= numActions)
         return;
 
+      //Determine if the edited action calls for removing all the past actions.
+      if(action -> getFullStripUpdate()){
+        for(int i = 0; i < LED_Action_index; i ++){
+         this->remove_LED_action(0); //remove the first action each time 
+        }
+
+        //Make sure to account for the change in index position.
+        LED_Action_index = 0;
+      }
+      
+
       //Run the deconstructor for each action type
       this->actionList[LED_Action_index]->deconstruct_displayLEDs();
       this->actionList[LED_Action_index]->deconstruct_alternateCoreAction();
@@ -247,7 +261,7 @@
        //Serial.println(num_leds); 
       
        if(writePrepared)
-          this->ledStrip.write(colors, 240, 31);
+          this->ledStrip.write(colors, 240, 10);
                 
     }
 

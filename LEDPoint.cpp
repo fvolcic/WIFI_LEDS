@@ -18,7 +18,7 @@ class LEDPoint : public LED_Action {
   //012PONT{COLORS1-9BYTES}{DIST-BETWEEN-POINTS-3BYTES}
   //EX:0
   //PASSED MESSAGE SHOULD BE OF FORM: {COLORS1-9BYTES}{COLOR2-9BYTES}
-   LEDPoint(int led_count, char * message) : LED_Action(led_count, true, false, false, message),col(rgb_color(255,255,255)), dist(1){
+   LEDPoint(int led_count, char * message) : LED_Action(led_count, true, false, false, false,message),col(rgb_color(255,255,255)), dist(1){
     
     char colDefiner[] = {'0','0','0'};
     int index = 0; 

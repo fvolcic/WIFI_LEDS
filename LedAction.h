@@ -13,15 +13,22 @@ class LED_Action{
     bool updateLEDs; //This tells the program is the LEDs need to be written to each loop, or if the task can be killed
     bool alternateCoreActions; //This lets the program know if there are actions that need to be run on an alternate core
     bool MQTTAction; //Lets the program know if there are MQTT Actions that need to be run
+    bool fullStripUpdate; //Will this action overwrite all past LED actions
     char * message; 
     bool preparedForWrite; //This is to let the action executer know if the action has finished running commands, and if it is now ready for update
     char * MQTTTopic; //This is for if there is a MQTT Topic that an action needs to use to run
     
+    
   public: 
 
     //Default constructor
-    LED_Action(int led_count,  bool updateLEDs, bool alternateCoreActions, bool MQTTAction,char * message) : 
-    led_count(led_count),  updateLEDs(updateLEDs), alternateCoreActions(alternateCoreActions), MQTTAction(MQTTAction),message(message),preparedForWrite(false) {}
+    //led_count - the number of LEDs that are present in the LED strip
+    //updateLEDs - Does this action require the display led method to be called continuously
+    //AlternateCoreActions - are there actions that are to be run on the alternate core?
+    //MQTTAction - are there actions that require MQTT
+    //fullStripUpdate - does this action overwrite all past actions? 
+    LED_Action(int led_count,  bool updateLEDs, bool alternateCoreActions, bool MQTTAction, bool fullStripUpdate,char * message) : 
+    led_count(led_count),  updateLEDs(updateLEDs), alternateCoreActions(alternateCoreActions), MQTTAction(MQTTAction),fullStripUpdate(fullStripUpdate),message(message),preparedForWrite(false) {}
     
     //This is the function that is called to both update an array containing the LED colors
     //REQUIRES: rgb_color points to the start of an rgb_color array, with length equal to the private variable led_count
@@ -84,7 +91,8 @@ class LED_Action{
     int getLEDCount(){
       return led_count; 
     }
-    
+
+    //returns if the action is prepared for the next write to the LED strip
     bool getWritePrepared(){
       if(preparedForWrite){
 
@@ -95,6 +103,12 @@ class LED_Action{
         
       return false;
     }
+
+    //determine if the LED action requires an entire strip update.
+    bool getFullStripUpdate(){
+      return fullStripUpdate;
+    }
+    
     
     
 };

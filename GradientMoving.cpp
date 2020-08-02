@@ -20,7 +20,7 @@ class MovingGradient : public LED_Action {
   //018GRAD{COLORS1-9BYTES}{COLOR2-9BYTES}
   //EX:018GRAD255000000000000255
   //PASSED MESSAGE SHOULD BE OF FORM: {COLORS1-9BYTES}{COLOR2-9BYTES}
-   MovingGradient(int led_count, char * message) : LED_Action(led_count, true, false, false, message), c1(rgb_color(0,0,0)), c2(rgb_color(0,0,0)), offset(0){
+   MovingGradient(int led_count, char * message) : LED_Action(led_count, true, false, false, true,message), c1(rgb_color(0,0,0)), c2(rgb_color(0,0,0)), offset(0){
     colors = new rgb_color[led_count]; 
      
     char colDefiner[3];
@@ -75,6 +75,21 @@ class MovingGradient : public LED_Action {
   
   //The setup function for the solid led colors
   void setupLEDs(rgb_color * colors){
+
+    Serial.print("Gradient Color 1: R:");
+    Serial.print(c1.red);
+    Serial.print(" G: ");
+    Serial.print(c1.green);
+    Serial.print(" B: ");
+    Serial.print(c1.blue);
+    Serial.println("");
+     Serial.print("Gradient Color 2: R:");
+    Serial.print(c2.red);
+    Serial.print(" G: ");
+    Serial.print(c2.green);
+    Serial.print(" B: ");
+    Serial.print(c2.blue);
+    Serial.println("");
     
     double colorDistance = 0;
 
@@ -88,16 +103,26 @@ class MovingGradient : public LED_Action {
     colorDistance = sqrt(colorDistance*colorDistance + (c1.blue - c2.blue)* (c1.blue - c2.blue));
     colorDistance = sqrt(colorDistance*colorDistance + (c1.green - c2.green) * (c1.green - c2.green));
 
+    Serial.print("The Distance Between the Colors is: ");
+    Serial.println(colorDistance); 
+
     //The components are now in unit vector form
     Vx = Vx / colorDistance; 
     Vy = Vy / colorDistance; 
     Vz = Vz / colorDistance; 
 
-    //Half of the LEDs on the strip 
+    Serial.println("Printing Unit Vector Components");
+    Serial.println(Vx);
+    Serial.println(Vy);
+    Serial.println(Vz);
+
     int half_led_count = led_count / 2; 
     
     //The size of each vector step through 3d space
     double stepSize = colorDistance / half_led_count; 
+
+    Serial.print("Step Size: ");
+    Serial.println(stepSize); 
     
     for(int i = 0; i < half_led_count; i ++){
       Serial.print(" - x color comp- ");
@@ -110,8 +135,18 @@ class MovingGradient : public LED_Action {
       this->colors[led_count - 1 - i] = this->colors[i];
       colors[led_count - 1 - i] = this->colors[i];
       
-
+      Serial.print(" | R: ");
+      Serial.print(colors[i].red);
+      Serial.print(" G: ");
+      Serial.print(colors[i].green);
+      Serial.print(" B: ");
+        Serial.print(colors[i].blue);
+      
     }
+
+    Serial.println("");
+
+   
     
     this->preparedForWrite = true;
   }

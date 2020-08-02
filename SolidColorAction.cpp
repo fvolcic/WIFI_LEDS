@@ -12,7 +12,7 @@ class SolidColor : public LED_Action {
      char colDefiner[3];
   public: 
 
-  SolidColor(int led_count, char * message) : LED_Action(led_count, false, true, false, message){
+  SolidColor(int led_count, char * message) : LED_Action(led_count, false, true, false, true,message){
   
     Serial.println("Starting to run solid coloring");
    

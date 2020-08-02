@@ -20,7 +20,7 @@ class Gradient : public LED_Action {
   //018GRAD{COLORS1-9BYTES}{COLOR2-9BYTES}
   //EX:018GRAD255000000000000255
   //PASSED MESSAGE SHOULD BE OF FORM: {COLORS1-9BYTES}{COLOR2-9BYTES}
-   Gradient(int led_count, char * message) : LED_Action(led_count, true, false, false, message), c1(rgb_color(0,0,0)), c2(rgb_color(0,0,0)), offset(0){
+   Gradient(int led_count, char * message) : LED_Action(led_count, true, false, false, true,message), c1(rgb_color(0,0,0)), c2(rgb_color(0,0,0)), offset(0){
     colors = new rgb_color[led_count]; 
 
 
