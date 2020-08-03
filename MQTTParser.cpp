@@ -8,6 +8,7 @@
 #include "GradientMoving.cpp"
 #include "cstrcmp.h" 
 #include "LEDPoint.cpp"
+#include "SolidColorTransition.cpp"
 
 //Let the compiler know we will be using the cstrcmp function from cstrcmp.h
 //extern bool cstrcmp(char * c_str1, char * c_str2);
@@ -53,6 +54,11 @@ class MQTTParser {
   //If there is an action 
   bool callEditAction;
   int editActionIndex; 
+
+
+  //If there is a new brightness available
+  bool brightnessAvailable; 
+  int brightness; 
   
   public:
 
@@ -147,7 +153,9 @@ class MQTTParser {
     char MovingGradientAction[5] = {'M','G','R','D','\0'};
     char ClearAction[5] = {'C','L','E','A','\0'};
     char PointAction[5] = {'P','O','N','T','\0'};
-
+    char SolidColorTransition[5] = {'S','T','R','N','\0'};
+    char Brightness[5] = {'B','R','I','G','\0'};
+    
     //This detemines what key to use
 
     Serial.println("Running cstrcmp");
@@ -180,7 +188,17 @@ class MQTTParser {
       Serial.println("CLEAR");
        killAllActions = true;
     }
-    
+
+    else  if(cstrcmp(SolidColorTransition, actionKey)){
+        action = new SolidTransition(led_count,MQTTMessage);
+       actionAvailable = true; 
+       Serial.println("Solid Transition");
+    }
+    else  if(cstrcmp(Brightness, actionKey)){
+       actionAvailable = false; 
+       brightness = atoi(MQTTMessage); 
+       brightnessAvailable = true; 
+    }
       else{
          Serial.println("Finished Running cstrcmp");
     actionAvailable = false; 
@@ -188,6 +206,17 @@ class MQTTParser {
     
   }
 
+
+  //Checks if there is a new brightness
+  bool getBrightnessAvailable(){
+    return brightnessAvailable; 
+  }
+
+  //Return the brightness
+  int getBrightness(){
+    brightnessAvailable = false; 
+    return brightness; 
+  }
 
   //This returns the action after an action was created
   //REQUIRES: create action has already been called, and there is an available action waiting

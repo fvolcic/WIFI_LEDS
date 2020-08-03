@@ -12,7 +12,7 @@
 //------------------------------------------------------------------------------------------------------------------|constructor|-----------------------
 
     //The default constructor for the action executer
-    ActionExecuter::ActionExecuter(APA102<13,12> &ledStrip, uint16_t num_leds) : ledStrip(ledStrip), num_leds(num_leds){
+    ActionExecuter::ActionExecuter(APA102<13,12> &ledStrip, uint16_t num_leds) : ledStrip(ledStrip), num_leds(num_leds), brightness(8){
       this->actionList = nullptr; 
       this->numActions = 0; 
       this->colors = new rgb_color[num_leds];
@@ -261,7 +261,7 @@
        //Serial.println(num_leds); 
       
        if(writePrepared)
-          this->ledStrip.write(colors, 240, 10);
+          this->ledStrip.write(colors, 240, brightness);
                 
     }
 
@@ -335,5 +335,12 @@ uint16_t ActionExecuter::getNumLEDs(){
     //delete the dynamic action list
     delete [] actionList; 
   }
+
+
+//------------------------------------------------------------------------------------------------------------------|Strip Brightness|-----------------------
+
+void ActionExecuter::setBrightness(int brightness){
+this->brightness = brightness; 
+}
 
   #endif

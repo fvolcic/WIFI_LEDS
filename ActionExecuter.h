@@ -36,7 +36,8 @@ class ActionExecuter{
     //determine if the LEDs have alternate core MQTT actions
     bool alternateMQTTActions; 
 
-
+    //The brightness that the led strip will use
+    int brightness; 
     
     
   public:
@@ -87,6 +88,8 @@ class ActionExecuter{
 
     //this returns the colors array that is used when changing the LED colors.
     rgb_color * getColors();
+
+    void setBrightness(int brightness);
 
     //The deconstructor
     ~ActionExecuter();

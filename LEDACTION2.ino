@@ -11,6 +11,7 @@
 const char ssid[] = "NETGEAR24";
 const char pass[] = "littlecartoon561";
 
+int brightness = 8;
 
 TaskHandle_t ledTask;
 
@@ -36,7 +37,7 @@ void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, pass);
 
-  client.begin("192.168.1.207", net);
+  client.begin("192.168.1.251", net);
   client.onMessage(messageReceived);
 
   connect();
@@ -74,6 +75,9 @@ void messageReceived(String &topic, String &payload) {
 
   if(parser.getClearActions())
     manager.clear_LED_actions();
+
+  if(parser.getBrightnessAvailable())
+    manager.setBrightness(parser.getBrightness());
 }
 
 
