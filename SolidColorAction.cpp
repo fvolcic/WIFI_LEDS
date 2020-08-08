@@ -8,80 +8,80 @@ class SolidColor : public LED_Action {
 
   private:
 
-    rgb_color stripcolor; 
-     char colDefiner[3];
-  public: 
+    rgb_color stripcolor;
+    char colDefiner[3];
+  public:
 
-  SolidColor(int led_count, char * message) : LED_Action(led_count, false, true, false, true,message){
-  
-    Serial.println("Starting to run solid coloring");
-   
-    int index = 0; 
-    for(char * msgPtr2 = message; *msgPtr2; ++msgPtr2){
-      
-      Serial.print(*msgPtr2);
-     
-       if(index < 3)
-         colDefiner[index] = *msgPtr2; 
+    SolidColor(int led_count, char * message) : LED_Action(led_count, false, true, false, true, message) {
 
-       if(index == 3) 
-         stripcolor.red = atoi( colDefiner); 
+      Serial.println("Starting to run solid coloring");
 
-       if(index >= 3 && index < 6)
-         colDefiner[index - 3] = *msgPtr2; 
+      int index = 0;
+      for (char * msgPtr2 = message; *msgPtr2; ++msgPtr2) {
 
-       if(index == 6) 
-         stripcolor.green = atoi( colDefiner); 
+        Serial.print(*msgPtr2);
 
-       if(index >= 6)
-         colDefiner[index - 6] = *msgPtr2; 
+        if (index < 3)
+          colDefiner[index] = *msgPtr2;
 
-       if(index == 8) 
-         stripcolor.blue = atoi( colDefiner);
-       
-       ++index; 
-    }
-    
-   }; 
+        if (index == 3)
+          stripcolor.red = atoi( colDefiner);
 
- 
-  
-  //The setup function for the solid led colors
-  void setupLEDs(rgb_color * colors){
+        if (index >= 3 && index < 6)
+          colDefiner[index - 3] = *msgPtr2;
 
-    Serial.println("RUNNING LED SETUP");
-   
-    for(int i = 0; i < led_count; ++ i){
-      colors[i].red = stripcolor.red;
-      colors[i].blue = stripcolor.blue;
-      colors[i].green = stripcolor.green;
-    }
+        if (index == 6)
+          stripcolor.green = atoi( colDefiner);
 
-     this -> preparedForWrite = true; 
-    
-    Serial.println("Running Solid Color LED setup");
-  }
+        if (index >= 6)
+          colDefiner[index - 6] = *msgPtr2;
+
+        if (index == 8)
+          stripcolor.blue = atoi( colDefiner);
+
+        ++index;
+      }
+
+    };
 
 
-  
-  void displayLEDs(rgb_color * colors){
-     for(int i = 0; i < led_count; ++ i){
-      colors[i].red = stripcolor.red;
-      colors[i].blue = stripcolor.blue;
-      colors[i].green = stripcolor.green;
+
+    //The setup function for the solid led colors
+    void setupLEDs(rgb_color * colors) {
+
+      Serial.println("RUNNING LED SETUP");
+
+      for (int i = 0; i < led_count; ++ i) {
+        colors[i].red = stripcolor.red;
+        colors[i].blue = stripcolor.blue;
+        colors[i].green = stripcolor.green;
+      }
+
+      this -> preparedForWrite = true;
+
+      Serial.println("Running Solid Color LED setup");
     }
 
-   
-    //Serial.println("RUNNING DISPLAY LEDS");
-  }
 
-void alternateCoreActionSetup(){}
-void alternateCoreAction(){}
-//void alternateCoreMQTTActionSetup(MQTTClient &client){}
-//void alternateCoreMQTTAction(MQTTClient &client){}
-void deconstruct_displayLEDs(){}
-void deconstruct_alternateCoreAction(){}
-//void deconstruct_alternateCoreMQTTAction(MQTTClient &client){}
-  
+
+    void displayLEDs(rgb_color * colors) {
+      for (int i = 0; i < led_count; ++ i) {
+        colors[i].red = stripcolor.red;
+        colors[i].blue = stripcolor.blue;
+        colors[i].green = stripcolor.green;
+      }
+
+
+      //Serial.println("RUNNING DISPLAY LEDS");
+    }
+
+    void alternateCoreActionSetup() {}
+    void alternateCoreAction() {}
+    //void alternateCoreMQTTActionSetup(MQTTClient &client){}
+    //void alternateCoreMQTTAction(MQTTClient &client){}
+    void deconstruct_displayLEDs() {}
+    void deconstruct_alternateCoreAction() {}
+    //void deconstruct_alternateCoreMQTTAction(MQTTClient &client){}
+
 };
 #endif

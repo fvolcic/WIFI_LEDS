@@ -1,28 +1,28 @@
-//This is the class that will hold the data for new mqtt messages. 
+//This is the class that will hold the data for new mqtt messages.
 
 #ifndef receiverCPP
 #define receiverCPP
 #include "MessageReceiver.h"
 #include "Arduino.h"
 
-    MessageReceiver::MessageReceiver(){
-      message = "";
-      newMessage = false; 
-    }
-  
-    void MessageReceiver::feedMessage(String message){
-      this->message = message; 
-      newMessage = true; 
-    }
+MessageReceiver::MessageReceiver() {
+  message = "";
+  newMessage = false;
+}
 
-    bool MessageReceiver::getNewMessage(){
-      return newMessage;  
-    };
+void MessageReceiver::feedMessage(String message) {
+  this->message = message;
+  newMessage = true;
+}
 
-    String MessageReceiver::getMessage(){
-      newMessage = false; 
-      return message; 
-    }
+bool MessageReceiver::getNewMessage() {
+  return newMessage;
+};
+
+String MessageReceiver::getMessage() {
+  newMessage = false;
+  return message;
+}
 
 
-#endif 
+#endif
