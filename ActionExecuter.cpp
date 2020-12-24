@@ -240,13 +240,14 @@
           }
         }
 
-        bool writePrepared = true; //This is to ensure that every action is ready to be written to the led strip
+       // bool writePrepared = true; //This is to ensure that every action is ready to be written to the led strip
 
         //Run through each action and make sure the action is prepared
         for(int i = 0; i < numActions; ++i){
           if(!actionList[i]->getWritePrepared()){
-            writePrepared = false; 
-            break;
+            //writePrepared = false; 
+            return; 
+            //break;
           }
         }
                 
@@ -260,7 +261,7 @@
        //Serial.print("WRITING TO LED STRIP NOW: led_count: "); 
        //Serial.println(num_leds); 
       
-       if(writePrepared)
+      // if(writePrepared)
           this->ledStrip.write(colors, 240, 10);
                 
     }

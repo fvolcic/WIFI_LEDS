@@ -36,7 +36,7 @@ void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, pass);
 
-  client.begin("192.168.1.207", net);
+  client.begin("192.168.1.130", net);
   client.onMessage(messageReceived);
 
   connect();
@@ -85,7 +85,7 @@ void connect() {
   }
 
   Serial.print("\nconnecting...");
-  while (!client.connect("192.168.1.207", "try", "try")) {
+  while (!client.connect("LED-strip", "try", "try")) {
     Serial.print(".");
     delay(1000);
   }
