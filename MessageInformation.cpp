@@ -1,5 +1,5 @@
 #include "MessageInformation.h"
-
+#include <stdlib.h>
 /*
      * messageElts format
      * 
@@ -24,13 +24,13 @@ inline int getEltLength(char type);
 inline int getLength(char, char *, int);
 
 //The constructor
-MessageInformation::MessageInformation(int numberOfMessageElts, char *messageElts, const char *message) : numberOfMessageElts(numberOfMessageElts), messageElts(messageElts), message(message)
+MessageInformation::MessageInformation(int numberOfMessageElts, char *messageElts, char *message) : numberOfMessageElts(numberOfMessageElts), messageElts(messageElts), message(message)
 {
 }
 
 //O(n) random access
 //O(1) sequential access
-const char *MessageInformation::getElt(int index)
+char *MessageInformation::getElt(int index)
 {
 
     if (index == this->eltIndex)
@@ -47,7 +47,7 @@ const char *MessageInformation::getElt(int index)
     return message + iterator;
 }
 
-const char *MessageInformation::getSequentialAccessElt(int index)
+char *MessageInformation::getSequentialAccessElt(int index)
 {
     int temp = msgIndex;
     
@@ -94,6 +94,30 @@ inline int getEltLength(char type)
     }
 }
 
+
+int MessageInformation::getColorValue(char col, char * colMsg){
+
+    char colDefiner[3] = {0,0,0};
+
+    switch (col)
+    {
+    case 'G':
+        colMsg += 3; 
+        break;
+    
+    case 'B':
+    colMsg += 6; 
+        break;
+    }
+
+    colDefiner[0] = colMsg[0]; 
+    colDefiner[1] = colMsg[1]; 
+    colDefiner[2] = colMsg[2]; 
+
+    return atoi(colDefiner); 
+}
+
+/*
 #include <iostream>
 #include <string> 
 
@@ -123,3 +147,4 @@ int main(){
 
 
 }
+*/

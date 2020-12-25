@@ -11,7 +11,8 @@
  * 
  */
 
-
+#ifndef MESSAGEINFORMATIONGAURD
+#define MESSAGEINFORMATIONGAURD
 
  class MessageInformation{
 
@@ -29,25 +30,29 @@
      *  
      *  
      */
-    MessageInformation(int numberOfMessageElts, char * messageElts, const char * message); 
+    MessageInformation(int numberOfMessageElts, char * messageElts, char * message); 
 
     //This returns a pointer to the starting index of a element.
     //This does all the calculation to reach the index. 
     //REQUIRES: a valid information index that can be accessed
     //EFFECTS: does not change anything
     //RETURNS: a pointer 
-    const char * getElt(int index); 
+    char * getElt(int index); 
   
-  //private:
+
+    //col - either 'R', 'G', or 'B'
+    int getColorValue(char col, char * colMsg); 
+
+  private:
     
 
-    const char * getSequentialAccessElt(int index); 
+    char * getSequentialAccessElt(int index); 
 
     //These are message variables
     //aiding in accessing the message
     int numberOfMessageElts; 
     char * messageElts; 
-    const char * message;
+    char * message;
 
     //These are used for saving the past state of the getElt
     int elt = 0;
@@ -55,3 +60,5 @@
     int eltIndex = 0; 
     
  }; 
+
+ #endif

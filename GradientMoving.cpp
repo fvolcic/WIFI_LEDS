@@ -3,6 +3,7 @@
 #include <APA102.h>
 #include <MQTT.h>
 #include "LedAction.h"
+#include "MessageInformation.h"
 
 class MovingGradient : public LED_Action {
 
@@ -20,62 +21,29 @@ class MovingGradient : public LED_Action {
   //018GRAD{COLORS1-9BYTES}{COLOR2-9BYTES}
   //EX:018GRAD255000000000000255
   //PASSED MESSAGE SHOULD BE OF FORM: {COLORS1-9BYTES}{COLOR2-9BYTES}
-   MovingGradient(int led_count, char * message) : LED_Action(led_count, true, false, false, true,message), c1(rgb_color(0,0,0)), c2(rgb_color(0,0,0)), offset(0){
+   MovingGradient(int led_count, char * message) : LED_Action(led_count, true, false, false, true, message), c1(rgb_color(0,0,0)), c2(rgb_color(0,0,0)), offset(0){
     colors = new rgb_color[led_count]; 
      
-    char colDefiner[3];
-  
-    int index = 0; 
-
-    
-    
-    for(char * msgPtr2 = message; *msgPtr2; ++msgPtr2){
-       if(index < 3)
-         colDefiner[index] = *msgPtr2; 
-
-       if(index == 3) 
-         c1.red = atoi( colDefiner); 
-
-       if(index >= 3 && index < 6)
-         colDefiner[index - 3] = *msgPtr2; 
-
-       if(index == 6) 
-         c1.green = atoi( colDefiner); 
-
-       if(index >= 6 && index < 9)
-         colDefiner[index - 6] = *msgPtr2; 
-
-       if(index == 8) 
-         c1.blue = atoi( colDefiner);
-
-      if(index >= 9 && index < 12) 
-          colDefiner[index - 9] = *msgPtr2; 
-
-      if(index == 11)
-        c2.red = atoi(colDefiner); 
-
-       if(index >= 12 && index < 15) 
-          colDefiner[index - 12] = *msgPtr2; 
-
-      if(index == 14)
-        c2.green = atoi(colDefiner);
-
-       if(index >= 15) 
-          colDefiner[index - 15] = *msgPtr2; 
-
-      if(index == 17)
-        c2.blue = atoi(colDefiner);
-        
-       ++index; 
+    MessageInformation msg(2, "CC", message); 
+     
+    char * col1 = msg.getElt(0); 
+    c1.red = msg.getColorValue('R', col1);   
+    c1.green = msg.getColorValue('G', col1);  
+    c1.blue = msg.getColorValue('B', col1);  
+      
+    col1 = msg.getElt(1); 
+    c2.red = msg.getColorValue('R', col1);   
+    c2.green = msg.getColorValue('G', col1);  
+    c2.blue = msg.getColorValue('B', col1);  
     }
     
-   }; 
+   
 
  
   
   //The setup function for the solid led colors
   void setupLEDs(rgb_color * colors){
-
+/*
     Serial.print("Gradient Color 1: R:");
     Serial.print(c1.red);
     Serial.print(" G: ");
@@ -90,7 +58,7 @@ class MovingGradient : public LED_Action {
     Serial.print(" B: ");
     Serial.print(c2.blue);
     Serial.println("");
-    
+    */
     double colorDistance = 0;
 
     //Store the vector components
@@ -103,18 +71,18 @@ class MovingGradient : public LED_Action {
     colorDistance = sqrt(colorDistance*colorDistance + (c1.blue - c2.blue)* (c1.blue - c2.blue));
     colorDistance = sqrt(colorDistance*colorDistance + (c1.green - c2.green) * (c1.green - c2.green));
 
-    Serial.print("The Distance Between the Colors is: ");
-    Serial.println(colorDistance); 
+  //  Serial.print("The Distance Between the Colors is: ");
+  //  Serial.println(colorDistance); 
 
     //The components are now in unit vector form
     Vx = Vx / colorDistance; 
     Vy = Vy / colorDistance; 
     Vz = Vz / colorDistance; 
 
-    Serial.println("Printing Unit Vector Components");
-    Serial.println(Vx);
-    Serial.println(Vy);
-    Serial.println(Vz);
+  //  Serial.println("Printing Unit Vector Components");
+  //  Serial.println(Vx);
+  //  Serial.println(Vy);
+  //  Serial.println(Vz);
 
     int half_led_count = led_count / 2; 
     
@@ -134,17 +102,17 @@ class MovingGradient : public LED_Action {
       colors[i] = this->colors[i]; 
       this->colors[led_count - 1 - i] = this->colors[i];
       colors[led_count - 1 - i] = this->colors[i];
-      
+      /*
       Serial.print(" | R: ");
       Serial.print(colors[i].red);
       Serial.print(" G: ");
       Serial.print(colors[i].green);
       Serial.print(" B: ");
         Serial.print(colors[i].blue);
-      
+      */
     }
 
-    Serial.println("");
+  //  Serial.println("");
 
    
     
