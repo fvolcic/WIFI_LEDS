@@ -1,6 +1,6 @@
 # WiFiLED4
 
-# GroundStation 2020 Edition
+# WiFi LED Strips
 
 ## About
 <ul>This project was created to contorl LED lights via wifi on an MQTT server. </ul>
