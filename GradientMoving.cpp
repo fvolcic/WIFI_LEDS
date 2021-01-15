@@ -43,6 +43,8 @@ class MovingGradient : public LED_Action {
   
   //The setup function for the solid led colors
   void setupLEDs(rgb_color * colors){
+
+    this->preparedForWrite = false; 
 /*
     Serial.print("Gradient Color 1: R:");
     Serial.print(c1.red);
@@ -128,7 +130,7 @@ class MovingGradient : public LED_Action {
   }
   
   void displayLEDs(rgb_color * colors){
-   // this->preparedForWrite = false;
+    this->preparedForWrite = false;
    // Serial.println("RUNNING GRADIENT DISPLAY");
    
     for(int i = 0; i < led_count; i ++){
@@ -147,7 +149,7 @@ void alternateCoreAction(){}
 //void alternateCoreMQTTActionSetup(MQTTClient &client){}
 //void alternateCoreMQTTAction(MQTTClient &client){}
 void deconstruct_displayLEDs(){
-  delete colors; 
+  delete[] colors; 
   }
 void deconstruct_alternateCoreAction(){}
 //void deconstruct_alternateCoreMQTTAction(MQTTClient &client){}

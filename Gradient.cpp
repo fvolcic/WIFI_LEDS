@@ -128,14 +128,26 @@ class Gradient : public LED_Action {
       this->preparedForWrite = true;
     }
 
+    char * getActionStateMessage(){
+      char * msgPtr = new char[5];
+      msgPtr[0] = 't'; 
+      msgPtr[0] = 'e'; 
+      msgPtr[0] = 's'; 
+      msgPtr[0] = 't'; 
+      msgPtr[0] = '\0'; 
+      return msgPtr; 
+    }
+
     void alternateCoreActionSetup() {}
     void alternateCoreAction() {}
     //void alternateCoreMQTTActionSetup(MQTTClient &client){}
     //void alternateCoreMQTTAction(MQTTClient &client){}
     void deconstruct_displayLEDs() {
-      delete colors;
+      delete[] colors;
     }
     void deconstruct_alternateCoreAction() {}
+
+   
     //void deconstruct_alternateCoreMQTTAction(MQTTClient &client){}
 
 };

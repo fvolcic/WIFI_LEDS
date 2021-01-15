@@ -69,6 +69,16 @@ class LED_Action {
     //A deconstruction function for the MQTT Actions
     //virtual void deconstruct_alternateCoreMQTTAction(MQTTClient &client) = 0;
 
+    //This is for publishing what the specific action is
+    //RETURNS: a char pointer to the start of the message to publish to MQTT
+    //EFFECTS: 
+    //REQUIRES:
+    virtual char * getActionStateMessage(){
+      char * rVal = new char[2];
+      rVal[0] = 'N';
+      rVal[1] = '\0';  
+      return rVal;
+      }
 
 
     virtual ~LED_Action() {};

@@ -4,6 +4,7 @@
 #include <ArduinoJson.h>
 #include "ActionExecuter.h"
 #include "LedAction.h"
+#include "GlobalVariables.h"
 
 #ifndef MQTTParserGaurd
 #define MQTTParserGaurd
@@ -18,6 +19,12 @@
 #include "OTA_Updater.h"
 #include "BrightnessGradient.cpp"
 #include "SubAction.cpp"
+#include "StripCopyShift.cpp"
+#include "DynamicLedShift.cpp"
+#include "BrightnessRandomizer.cpp"
+#include "MirrorAction.cpp"
+#include "LEDSerial.cpp"
+#include "SnapshotAction.cpp"
 
 extern void update_firmware();
 
@@ -121,7 +128,14 @@ void MQTTParser::createAction(const uint8_t led_count) {
   char OTA_Update[] = "UPDA";
   char BGradAction[] = "BGRD";
   char SubActions[] = "SACT";
-
+  char ShiftActionKey[] = "SHFT";
+  char GetAllActions[] = "AGET";
+  char DynamicShiftActionKey[] = "DSHF";
+  char RandomBAction[] = "RBRI";
+  char MirrorActionKey[] = "MIRR";
+  char LEDSerialKey[] = "SERI";
+  char SnapshotKey[] = "SNAP";
+  
   //This detemines what key to use
 
   Serial.println("Running cstrcmp");
@@ -136,6 +150,16 @@ void MQTTParser::createAction(const uint8_t led_count) {
     action = new Gradient(led_count, MQTTMessage);
     actionAvailable = true;
     Serial.println("GRADIENT");
+  }
+  else  if (cstrcmp(MirrorActionKey, actionKey)) {
+    action = new MirrorAction(led_count, MQTTMessage);
+    actionAvailable = true;
+    Serial.println("GRADIENT");
+  }
+  else  if (cstrcmp(ShiftActionKey, actionKey)) {
+    action = new ShiftAction(led_count, MQTTMessage);
+    actionAvailable = true;
+    Serial.println("Shift");
   }
 
   else  if (cstrcmp(MovingGradientAction, actionKey)) {
@@ -153,6 +177,11 @@ void MQTTParser::createAction(const uint8_t led_count) {
     action = new UninitilizedData(led_count, MQTTMessage);
     actionAvailable = true;
     Serial.println("MOVING GRADIENT");
+
+  } else  if (cstrcmp(RandomBAction, actionKey)) {
+    action = new BrightnessRandomizer(led_count, MQTTMessage);
+    actionAvailable = true;
+    Serial.println("Random Brightnesses");
   }
 
   else  if (cstrcmp(PointAction, actionKey)) {
@@ -172,22 +201,63 @@ void MQTTParser::createAction(const uint8_t led_count) {
     Serial.println("Solid Transition");
 
   }
-  
-    else  if (cstrcmp(SubActions, actionKey)) {
+  else  if (cstrcmp(DynamicShiftActionKey, actionKey)) {
+    action = new DynamicShiftAction(led_count, MQTTMessage);
+    actionAvailable = true;
+    Serial.println("Dynamic Shift");
+
+  }
+  else  if (cstrcmp(SubActions, actionKey)) {
     action = new SubAction(led_count, MQTTMessage);
     actionAvailable = true;
-    Serial.println("SubAction called"); 
-    }
-  
+    Serial.println("SubAction called");
+  }
+
   else  if (cstrcmp(Brightness, actionKey)) {
     actionAvailable = false;
     brightness = atoi(MQTTMessage);
     brightnessAvailable = true;
+  } else  if (cstrcmp(LEDSerialKey, actionKey)) {
+    action = new LEDSerial(led_count, MQTTMessage);
+    actionAvailable = true;
+    Serial.println("LEDSerial"); 
+  }
+  else if(cstrcmp(SnapshotKey, actionKey)){
+    actionAvailable = true; 
+    action = new SnapshotShiftAction(led_count, MQTTMessage); 
+    Serial.println("Snapshot"); 
   }
   else if (cstrcmp(OTA_Update, actionKey)) {
     actionAvailable = false;
     xTaskCreatePinnedToCore(update_firmware, "UPDATE", 10000, NULL, 1, NULL, xPortGetCoreID());
     vTaskDelete(NULL);
+  } else if (cstrcmp(GetAllActions, actionKey)) {
+    Serial.println("Request for listing all actions");
+
+    actionAvailable = false;
+    sendActionsToMqtt = true;
+
+    int messageLength = 0;
+    int iter = 0;
+    Serial.print("Sending to ");
+    while (iter < 129 && MQTTMessage[iter] != '~') {
+      Serial.print(MQTTMessage[iter]);
+      ++iter;
+    }
+
+    Serial.println("");
+
+    MQTTMessage[iter] = '\0';
+
+    delete this->topic;
+
+    topic = new char[iter + 1];
+
+    for (int i = 0; i <= iter; ++i) {
+      topic[i] = MQTTMessage[i];
+      Serial.print(topic[i]);
+    }
+    Serial.println ("output finished");
   }
   else {
     Serial.println("Finished Running cstrcmp");
@@ -253,6 +323,9 @@ void MQTTParser::manageLEDs(ActionExecuter * manager) {
 
   if (this->getBrightnessAvailable())
     manager->setBrightness(this->getBrightness());
+
+  if (this->getSendMQTTActionList())
+    manager->publishActionStatesMQTT(MQTT_GLOBALS::client, this->topic);
 }
 
 
@@ -310,5 +383,12 @@ int MQTTParser::killActionIndex() {
   return actionKillIndex;
 }
 
+bool MQTTParser::getSendMQTTActionList() {
+  if (sendActionsToMqtt) {
+    sendActionsToMqtt = false;
+    return true;
+  }
+  return false;
+}
 
 #endif

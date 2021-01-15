@@ -6,7 +6,7 @@
 #include "LedAction.h"
 #include <APA102.h> //The led library
 #include <MQTT.h>
-
+#include <String> 
 class ActionExecuter {
 
   private:
@@ -79,6 +79,9 @@ class ActionExecuter {
 
     //This is for the alternate action executer that runs on the internet core
     void executeAlternateActions();
+
+    //Publish the current led actions that are on the led strip
+    void publishActionStatesMQTT(MQTTClient & mqttclient, char * mqttChannel);
 
     //Returns the current number of LEDs
     uint16_t getNumLEDs();

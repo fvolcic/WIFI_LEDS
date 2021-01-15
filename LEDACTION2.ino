@@ -3,45 +3,30 @@
 #include <APA102.h>
 #include "MQTTParser.h"
 #include "ActionExecuter.h"
-#include "LedAction.h"
-#include "SolidColorAction.cpp"
 #include "FileManager.h"
-
+#include "GlobalVariables.h"
 
 #define LED_BUILTIN 2
 
 int brightness = 8;
 
-char * ssid = "NETGEAR24";
-char * pass = "littlecartoon561"; 
-
 TaskHandle_t ledTask;
 TaskHandle_t WiFiTask;
 
-WiFiClient net;
-MQTTClient client;
-
 APA102<13, 12> ledStrip;
-
-// Set the number of LEDs to control.
-const uint16_t ledCount = 240;
-
-// Create a buffer for holding the colors (3 bytes per color).
-rgb_color colors[ledCount];
-
 
 //These are the units that will manage the data for device
 FileManager fileManager = FileManager();
-ActionExecuter manager = ActionExecuter(ledStrip, ledCount);
-MQTTParser parser = MQTTParser(ledCount);
+ActionExecuter manager = ActionExecuter(ledStrip, LEDSTRIP_GLOBALS::led_count);
+MQTTParser parser = MQTTParser(LEDSTRIP_GLOBALS::led_count);
 
 
 void setup() {
   Serial.begin(115200);
-  WiFi.begin(ssid, pass);
+  WiFi.begin(WIFI_GLOBALS::ssid, WIFI_GLOBALS::pass);
 
-  client.begin("192.168.1.131", net);
-  client.onMessage(messageReceived);
+  MQTT_GLOBALS::client.begin("192.168.1.141", WIFI_GLOBALS::net);
+  MQTT_GLOBALS::client.onMessage(messageReceived);
 
   pinMode(LED_BUILTIN, OUTPUT);
 
@@ -49,12 +34,12 @@ void setup() {
   
   connect();
 
-  xTaskCreatePinnedToCore(runLEDs, "LED TASK", 10000, NULL, 0, &ledTask, 0); //Pin to core 1
+  xTaskCreatePinnedToCore(runLEDs, "LED TASK", 10000, NULL, 0, &ledTask, 1); //Pin to core 1
   xTaskCreatePinnedToCore(runWiFiTasks, "WiFi TASK", 10000, NULL, 0, &WiFiTask, 0); //Pin to core 0
   
 }
 
-  void loop(){}
+void loop(){vTaskDelete(NULL);}
 
 //This is linked to the MQTT Client. This is called whenever a new message is received on a subscribed topic.
 void messageReceived(String &topic, String &payload) {
@@ -73,7 +58,7 @@ void connect() {
   }
 
   Serial.print("\nconnecting...");
-  while (!client.connect("192.168.1.207", "try", "try")) {
+  while (!MQTT_GLOBALS::client.connect("ESP2!", "try2", "try2")) {
     Serial.print(".");
     delay(1000);
   }
@@ -81,7 +66,7 @@ void connect() {
   Serial.println("\nconnected!");
 
   //Subscribe to the name of the device
-  client.subscribe("/barLights");
+  MQTT_GLOBALS::client.subscribe("/barLights");
   digitalWrite(LED_BUILTIN, HIGH);
 }
 
@@ -97,10 +82,10 @@ void runWiFiTasks(void * parameter) {
   for (;;) {
     vTaskDelay(10);
     //Ensure the device is connected.
-    if (!client.connected())
+    if (!MQTT_GLOBALS::client.connected())
       connect();
 
-    client.loop();
+    MQTT_GLOBALS::client.loop();
  
     vTaskDelay(10.0 / portTICK_PERIOD_MS); //This will delay the run WiFi task for 10 milliseconds.
     //This ensures that the task is delayed, but the core is not in use.

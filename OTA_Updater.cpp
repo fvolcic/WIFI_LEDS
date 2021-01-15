@@ -1,16 +1,13 @@
 #include <WiFi.h>
 #include <ArduinoOTA.h>
 
-#include "OTA_Updater.h"
+#include "GlobalVariables.h"
 
 #ifndef UPDAGAURD
 #define UPDAGAURD
 
 //The reset function
 void(* resetFunc) (void) = 0;
-
-char * test::SSid = "NETGEAR24"; 
-char * test::PAss = "littlecartoon561"; 
 
 void update_firmware(void * p) {
 
@@ -19,7 +16,7 @@ void update_firmware(void * p) {
 
   //Begin the new WiFi process
   WiFi.mode(WIFI_STA);
-  WiFi.begin(test::SSid, test::PAss);
+  WiFi.begin(WIFI_GLOBALS::ssid, WIFI_GLOBALS::pass);
 
   Serial.print("checking wifi...");
   while (WiFi.status() != WL_CONNECTED) {

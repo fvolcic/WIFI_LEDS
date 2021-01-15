@@ -61,4 +61,6 @@
     
  }; 
 
+ extern int getValue(char * startingIndex, int numLength); 
+
  #endif

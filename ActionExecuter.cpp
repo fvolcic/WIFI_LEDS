@@ -242,13 +242,13 @@ void ActionExecuter::executeActions() {
 
   bool writePrepared = true; //This is to ensure that every action is ready to be written to the led strip
 
-  //Run through each action and make sure the action is prepared
-  for (int i = 0; i < numActions; ++i) {
-    if (!actionList[i]->getWritePrepared()) {
-      writePrepared = false;
-      break;
-    }
-  }
+ //Run through each action and make sure the action is prepared
+ //  for (int i = 0; i < numActions; ++i) {
+ //   if (!actionList[i]->getWritePrepared()) {
+ //     writePrepared = false;
+ //     break;
+ //   }
+ // }
 
   //This writes all the colors to the led strip
   //there is an optional third paramater, which is brightness, which could be used.
@@ -343,4 +343,27 @@ void ActionExecuter::setBrightness(int brightness) {
   this->brightness = brightness;
 }
 
+
+//------------------------------------------------------------------------------------------------------------------|PublishState|--------------------------
+void ActionExecuter::publishActionStatesMQTT(MQTTClient & mqttclient, char * mqttChannel){
+  String channel = mqttChannel; 
+
+  Serial.println("Sending Actions"); 
+  Serial.print("Topic: ");
+  Serial.println(channel); 
+
+  //Serial.println(*mqttChannel); 
+  
+  for(int i = 0; i < numActions; ++i){
+    char * msgPtr = this->actionList[i]->getActionStateMessage();
+    String message = msgPtr;
+    delete[] msgPtr; 
+
+    Serial.print("MQTT Message: "); 
+    Serial.println(message); 
+
+    //mqttclient.publish(channel, message); 
+    mqttclient.publish(channel, message); 
+  }
+}
 #endif

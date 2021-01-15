@@ -59,6 +59,10 @@ class MQTTParser {
     bool brightnessAvailable;
     int brightness;
 
+    //If the action manager should send out an mqtt message to a specified topic
+    bool sendActionsToMqtt = false; 
+    char * topic = new char[0]; 
+
     //This is for reading JSON style messages. Library used is ArduinoJson, which can be found at arduinojson.org
     //This sets the json document parser on the stack with a fixed amount of memory. In this case, it is 500 bytes.
     StaticJsonDocument<500> doc;
@@ -137,6 +141,8 @@ class MQTTParser {
     bool getKillAction();
 
     int killActionIndex();
+
+    bool getSendMQTTActionList(); 
 };
 
 

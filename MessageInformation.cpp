@@ -117,6 +117,23 @@ int MessageInformation::getColorValue(char col, char * colMsg){
     return atoi(colDefiner); 
 }
 
+
+ int getValue(char * startingIndex, int numLength){
+
+  char * tmpNum = new char[numLength];
+
+  for(int i = 0; i < numLength; ++i){
+    tmpNum[i] = startingIndex[i]; 
+  }
+
+  int returnVal = atoi(tmpNum); 
+
+  delete tmpNum; 
+
+  return returnVal; 
+  
+ }
+
 /*
 #include <iostream>
 #include <string> 
