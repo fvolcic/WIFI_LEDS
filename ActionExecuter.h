@@ -4,6 +4,7 @@
 #ifndef ActionExecuter_Gaurd
 #define ActionExecuter_Gaurd
 #include "LedAction.h"
+#include "GlobalVariables.h"
 #include <APA102.h> //The led library
 #include <MQTT.h>
 #include <String> 
@@ -22,7 +23,7 @@ class ActionExecuter {
     rgb_color * colors;
 
     //A reference to the APA102 LED Strip for IO output
-    APA102<13, 12> &ledStrip;
+    APA102<DATAPIN, CLOCKPIN> &ledStrip;
 
     //The number of LEDs in the strip
     const uint16_t num_leds;
@@ -46,7 +47,7 @@ class ActionExecuter {
     ActionExecuter();
 
     //The default constructor for the action executer
-    ActionExecuter(APA102<13, 12> &ledStrip, const uint16_t num_leds);
+    ActionExecuter(APA102<DATAPIN, CLOCKPIN> &ledStrip, const uint16_t num_leds);
 
     //Add an execution action
     //REQUIRES: LED_Action is a valid action

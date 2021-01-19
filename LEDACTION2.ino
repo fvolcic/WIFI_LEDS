@@ -13,11 +13,14 @@ int brightness = 8;
 TaskHandle_t ledTask;
 TaskHandle_t WiFiTask;
 
-APA102<13, 12> ledStrip;
+
+//PIN 14: Data Pin
+//PIN 12: Clock Pin
+APA102<DATAPIN, CLOCKPIN> ledStrip;
 
 //These are the units that will manage the data for device
 FileManager fileManager = FileManager();
-ActionExecuter manager = ActionExecuter(ledStrip, LEDSTRIP_GLOBALS::led_count);
+ActionExecuter manager = ActionExecuter(ledStrip, /*LEDSTRIP_GLOBALS::led_count*/240);
 MQTTParser parser = MQTTParser(LEDSTRIP_GLOBALS::led_count);
 
 
@@ -66,7 +69,7 @@ void connect() {
   Serial.println("\nconnected!");
 
   //Subscribe to the name of the device
-  MQTT_GLOBALS::client.subscribe("/barLights");
+  MQTT_GLOBALS::client.subscribe(MQTT_GLOBALS::MQTTChannel);
   digitalWrite(LED_BUILTIN, HIGH);
 }
 

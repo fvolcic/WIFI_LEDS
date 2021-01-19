@@ -25,6 +25,7 @@
 #include "MirrorAction.cpp"
 #include "LEDSerial.cpp"
 #include "SnapshotAction.cpp"
+#include "LEDTinting.cpp"
 
 extern void update_firmware();
 
@@ -135,6 +136,7 @@ void MQTTParser::createAction(const uint8_t led_count) {
   char MirrorActionKey[] = "MIRR";
   char LEDSerialKey[] = "SERI";
   char SnapshotKey[] = "SNAP";
+  char TintKey[] = "TINT"; 
   
   //This detemines what key to use
 
@@ -167,6 +169,11 @@ void MQTTParser::createAction(const uint8_t led_count) {
     actionAvailable = true;
     Serial.println("MOVING GRADIENT");
   }
+   else  if (cstrcmp(TintKey, actionKey)) {
+    action = new TintRandomizer(led_count, MQTTMessage);
+    actionAvailable = true;
+    Serial.println("LED TINT");
+  } 
   else if (cstrcmp(BGradAction, actionKey)) {
     Serial.println("Brightness Gradient");
     action = new BrightnessGradient(led_count, MQTTMessage);

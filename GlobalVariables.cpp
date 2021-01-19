@@ -8,7 +8,7 @@ WiFiClient WIFI_GLOBALS::net = WiFiClient();
 
 //MQTT_GLOBALS
 MQTTClient MQTT_GLOBALS::client = MQTTClient(); 
-
+String MQTT_GLOBALS::MQTTChannel = "/barLights";
 
 //LEDSTRIP Globals
 

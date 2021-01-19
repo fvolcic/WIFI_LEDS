@@ -12,7 +12,7 @@
 //------------------------------------------------------------------------------------------------------------------|constructor|-----------------------
 
 //The default constructor for the action executer
-ActionExecuter::ActionExecuter(APA102<13, 12> &ledStrip, uint16_t num_leds) : ledStrip(ledStrip), num_leds(num_leds), brightness(8) {
+ActionExecuter::ActionExecuter(APA102<DATAPIN, CLOCKPIN> &ledStrip, uint16_t num_leds) : ledStrip(ledStrip), num_leds(num_leds), brightness(8) {
   this->actionList = nullptr;
   this->numActions = 0;
   this->colors = new rgb_color[num_leds];
